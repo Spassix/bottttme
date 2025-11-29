@@ -234,7 +234,8 @@ def main() -> None:
     
     if render_external_url:
         # Mode webhook pour Render
-        webhook_url = f"{render_external_url}/webhook"
+        webhook_path = "/webhook"
+        webhook_url = f"{render_external_url}{webhook_path}"
         logger.info(f"Mode webhook activé: {webhook_url}")
         
         async def webhook_post_init(app: Application) -> None:
@@ -248,7 +249,7 @@ def main() -> None:
         application.run_webhook(
             listen="0.0.0.0",
             port=int(render_port),
-            webhook_url=webhook_url,
+            webhook_path=webhook_path,
             allowed_updates=Update.ALL_TYPES
         )
     else:
