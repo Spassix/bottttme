@@ -6,7 +6,7 @@ users.json
 
 # Images
 *.png
-!speednice_logo.png
+!hashburgur_logo.png
 *.jpg
 *.jpeg
 *.gif

@@ -31,7 +31,7 @@ CANAL_SECOURS_URL = os.getenv("CANAL_SECOURS_URL")
 WHATSAPP_URL = os.getenv("WHATSAPP_URL")
 
 # Chemin de l'image (à ajouter dans le dossier)
-IMAGE_PATH = os.getenv("IMAGE_PATH", "speednice_logo.png")
+IMAGE_PATH = os.getenv("IMAGE_PATH", "hashburgur_logo.png")
 
 # Fichier pour stocker les utilisateurs
 USERS_FILE = os.getenv("USERS_FILE", "users.json")
@@ -73,17 +73,19 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     keyboard = [
         [InlineKeyboardButton("🛒 Mini App", web_app=WebAppInfo(url=MINI_APP_URL))],
         [InlineKeyboardButton("📱 Lien Telegram", url=TELEGRAM_URL)],
-        [InlineKeyboardButton("🆘 Canal Secours", url=CANAL_SECOURS_URL)],
-        [InlineKeyboardButton("📱 Lien WhatsApp", url=WHATSAPP_URL)]
+        [InlineKeyboardButton("🆘 Canal Secours", url=CANAL_SECOURS_URL)]
     ]
+    # Ajouter le bouton WhatsApp seulement si l'URL est définie
+    if WHATSAPP_URL:
+        keyboard.append([InlineKeyboardButton("📱 Lien WhatsApp", url=WHATSAPP_URL)])
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     # Message de bienvenue
-    welcome_message = """**⚡ SPEED NICE ⚡**
+    welcome_message = """**🍔 HashBurgur 🍔**
 
 Hey ! 👋
 
-Tu es sur le bot officiel **SPEED NICE**. Accède rapidement à tous nos services et produits.
+Tu es sur le bot officiel **HashBurgur**. Accède rapidement à tous nos services et produits.
 
 **🚀 Navigation rapide :**
 • Clique sur les boutons ci-dessous pour accéder aux différents services
@@ -91,7 +93,7 @@ Tu es sur le bot officiel **SPEED NICE**. Accède rapidement à tous nos service
 • Reste connecté pour ne rien rater
 
 **📞 Besoin d'aide ?**
-🐦‍⬛ Contacte-nous directement : @SpeedNeverDie
+🐦‍⬛ Contacte-nous directement : @hh_hb06
 
 Sélectionne une option ci-dessous 👇"""
     
