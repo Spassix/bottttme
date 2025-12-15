@@ -28,9 +28,10 @@ ADMIN_ID = int(os.getenv("ADMIN_ID", 0))
 MINI_APP_URL = os.getenv("MINI_APP_URL")
 TELEGRAM_CHANNEL_URL = os.getenv("TELEGRAM_CHANNEL_URL")
 SNAPCHAT_URL = os.getenv("SNAPCHAT_URL")
+POTATO_URL = os.getenv("POTATO_URL")
 
 # Chemin de l'image (à ajouter dans le dossier)
-IMAGE_PATH = os.getenv("IMAGE_PATH", "coffi_logo.png")
+IMAGE_PATH = os.getenv("IMAGE_PATH", "mexicain_logo.png")
 
 # Fichier pour stocker les utilisateurs
 USERS_FILE = os.getenv("USERS_FILE", "users.json")
@@ -71,25 +72,23 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Création du clavier avec les boutons
     keyboard = []
     if MINI_APP_URL:
-        keyboard.append([InlineKeyboardButton("🚀 Mini App", web_app=WebAppInfo(url=MINI_APP_URL))])
-    if TELEGRAM_CHANNEL_URL:
-        keyboard.append([InlineKeyboardButton("💬 Canal Telegram", url=TELEGRAM_CHANNEL_URL)])
+        keyboard.append([InlineKeyboardButton("🛒 SHOP", web_app=WebAppInfo(url=MINI_APP_URL))])
     if SNAPCHAT_URL:
-        keyboard.append([InlineKeyboardButton("👻 Snapchat", url=SNAPCHAT_URL)])
+        keyboard.append([InlineKeyboardButton("📞 CONTACT", url=SNAPCHAT_URL)])
+    if TELEGRAM_CHANNEL_URL:
+        keyboard.append([InlineKeyboardButton("📨 TELEGRAM", url=TELEGRAM_CHANNEL_URL)])
+    if POTATO_URL:
+        keyboard.append([InlineKeyboardButton("🚀 POTATO", url=POTATO_URL)])
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     # Message de bienvenue (HTML pour éviter les problèmes de parsing)
-    welcome_message = """<b>☕ Coffi Wervicq ☕</b>
+    welcome_message = """<b>Bienvenue chez Mexicain59🥇</b>
 
-Bienvenue dans Coffi Wervicq ! 🌟
+Accédez à tout, directement sur notre Bot, naviguez librement et retrouvez ce dont vous avez besoin en un clin d'œil😉
 
-Découvre nos produits premium.
+Appuie sur /start pour réactualiser notre shop🔄
 
-Explore nos réseaux et reste connecté 👇
-
-<b>💡 Astuce :</b> Utilise /start pour réactualiser le menu
-
-<b>📞 Contact direct :</b> @coffi599"""
+<b>Un seul contact prise de commande uniquement sur snapchat‼️</b>"""
     
     # Envoi de l'image si elle existe, sinon juste le message
     try:
@@ -110,17 +109,13 @@ Explore nos réseaux et reste connecté 👇
     except Exception as e:
         logger.error(f"Erreur lors de l'envoi de l'image: {e}")
         # En cas d'erreur, envoyer sans formatage
-        welcome_message_plain = """☕ Coffi Wervicq ☕
+        welcome_message_plain = """Bienvenue chez Mexicain59🥇
 
-Bienvenue dans Coffi Wervicq ! 🌟
+Accédez à tout, directement sur notre Bot, naviguez librement et retrouvez ce dont vous avez besoin en un clin d'œil😉
 
-Découvre nos produits premium.
+Appuie sur /start pour réactualiser notre shop🔄
 
-Explore nos réseaux et reste connecté 👇
-
-💡 Astuce : Utilise /start pour réactualiser le menu
-
-📞 Contact direct : @coffi599"""
+Un seul contact prise de commande uniquement sur snapchat‼️"""
         await update.message.reply_text(
             welcome_message_plain,
             reply_markup=reply_markup

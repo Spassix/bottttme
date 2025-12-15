@@ -6,8 +6,7 @@ users.json
 
 # Images
 *.png
-!coffee_logo.png
-!coffi_logo.png
+!mexicain_logo.png
 *.jpg
 *.jpeg
 *.gif
