@@ -89,7 +89,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Création du clavier avec les boutons
     keyboard = []
     if MINI_APP_URL:
-        keyboard.append([InlineKeyboardButton("🛒 SHOP", web_app=WebAppInfo(url=MINI_APP_URL))])
+        keyboard.append([InlineKeyboardButton("📋 MENU", web_app=WebAppInfo(url=MINI_APP_URL))])
     if SNAPCHAT_URL:
         keyboard.append([InlineKeyboardButton("📞 CONTACT", url=SNAPCHAT_URL)])
     if TELEGRAM_CHANNEL_URL:
