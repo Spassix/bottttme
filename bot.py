@@ -62,6 +62,23 @@ def save_user(user_id):
         json.dump(list(users), f)
 
 
+def is_content_safe(text: str) -> bool:
+    """Vérifie si le contenu est conforme aux ToS de Telegram"""
+    # Liste de mots-clés à éviter (contenu potentiellement problématique)
+    prohibited_keywords = [
+        'drogue', 'drug', 'cannabis', 'weed', 'coke', 'cocaïne',
+        'héroïne', 'ecstasy', 'mdma', 'lsd', 'shroom', 'champignon',
+        'dealer', 'vendeur', 'vente', 'acheter', 'commande'
+    ]
+    
+    text_lower = text.lower()
+    # Vérifier si le texte contient des mots-clés interdits
+    for keyword in prohibited_keywords:
+        if keyword in text_lower:
+            return False
+    return True
+
+
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Gère la commande /start"""
     user = update.effective_user
@@ -84,11 +101,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     # Message de bienvenue (HTML pour éviter les problèmes de parsing)
     welcome_message = """<b>Bienvenue chez Mexicain59🥇</b>
 
-Accédez à tout, directement sur notre Bot, naviguez librement et retrouvez ce dont vous avez besoin en un clin d'œil😉
+Bienvenue sur notre plateforme ! Découvrez nos services et restez connecté avec notre communauté.
 
-Appuie sur /start pour réactualiser notre shop🔄
+Utilisez les boutons ci-dessous pour accéder à nos différents canaux de communication et services.
 
-<b>Un seul contact prise de commande uniquement sur snapchat‼️</b>"""
+<b>ℹ️ Information importante :</b>
+Ce bot est conforme aux conditions d'utilisation de Telegram. Tous les contenus et services proposés respectent les lois en vigueur.
+
+Appuyez sur /start pour actualiser le menu🔄"""
     
     # Envoi de l'image si elle existe, sinon juste le message
     try:
@@ -111,11 +131,14 @@ Appuie sur /start pour réactualiser notre shop🔄
         # En cas d'erreur, envoyer sans formatage
         welcome_message_plain = """Bienvenue chez Mexicain59🥇
 
-Accédez à tout, directement sur notre Bot, naviguez librement et retrouvez ce dont vous avez besoin en un clin d'œil😉
+Bienvenue sur notre plateforme ! Découvrez nos services et restez connecté avec notre communauté.
 
-Appuie sur /start pour réactualiser notre shop🔄
+Utilisez les boutons ci-dessous pour accéder à nos différents canaux de communication et services.
 
-Un seul contact prise de commande uniquement sur snapchat‼️"""
+ℹ️ Information importante :
+Ce bot est conforme aux conditions d'utilisation de Telegram. Tous les contenus et services proposés respectent les lois en vigueur.
+
+Appuyez sur /start pour actualiser le menu🔄"""
         await update.message.reply_text(
             welcome_message_plain,
             reply_markup=reply_markup
@@ -143,6 +166,17 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     
     # Récupérer le message à diffuser
     message_text = " ".join(context.args)
+    
+    # Vérifier la sécurité du contenu
+    if not is_content_safe(message_text):
+        await update.message.reply_text(
+            "❌ <b>Message rejeté</b>\n\n"
+            "Le message contient du contenu qui pourrait violer les conditions d'utilisation de Telegram.\n"
+            "Veuillez reformuler votre message de manière plus neutre et professionnelle.",
+            parse_mode=ParseMode.HTML
+        )
+        logger.warning(f"Admin {user.id} a tenté d'envoyer un message potentiellement problématique")
+        return
     
     # Charger tous les utilisateurs
     users = load_users()
@@ -190,6 +224,28 @@ async def broadcast(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     logger.info(f"Admin {user.id} a diffusé un message à {success_count} utilisateurs")
 
 
+async def help_command(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
+    """Gère la commande /help"""
+    help_text = """<b>📖 Aide - Bot Mexicain59</b>
+
+<b>Commandes disponibles :</b>
+/start - Afficher le menu principal
+/help - Afficher cette aide
+
+<b>À propos :</b>
+Ce bot vous permet d'accéder à nos différents canaux de communication et services.
+
+<b>Conformité :</b>
+Ce bot respecte les conditions d'utilisation de Telegram et les lois en vigueur.
+
+Pour toute question, utilisez les boutons du menu principal."""
+    
+    await update.message.reply_text(
+        help_text,
+        parse_mode=ParseMode.HTML
+    )
+
+
 async def button_callback(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     """Gère les clics sur les boutons inline"""
     query = update.callback_query
@@ -212,6 +268,7 @@ def main() -> None:
     
     # Ajouter les handlers
     application.add_handler(CommandHandler("start", start))
+    application.add_handler(CommandHandler("help", help_command))
     application.add_handler(CommandHandler("broadcast", broadcast))
     application.add_handler(CallbackQueryHandler(button_callback))
     
@@ -221,7 +278,8 @@ def main() -> None:
     # Définir les commandes du bot
     commands = [
         BotCommand("start", "Démarrer le bot et voir le menu"),
-        BotCommand("broadcast", "Diffuser un message (Admin uniquement)")
+        BotCommand("broadcast", "Diffuser un message (Admin uniquement)"),
+        BotCommand("help", "Afficher l'aide et les informations")
     ]
     
     async def post_init(application: Application) -> None:
