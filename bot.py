@@ -99,16 +99,14 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE) -> None:
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     # Message de bienvenue (HTML pour éviter les problèmes de parsing)
-    welcome_message = """<b>Bienvenue chez Mexicain59🥇</b>
+    welcome_message = """<b>Bienvenue chez Mexicain59</b>
 
-Bienvenue sur notre plateforme ! Découvrez nos services et restez connecté avec notre communauté.
+Accède facilement à nos services et produits grâce aux boutons ci-dessous
 
-Utilisez les boutons ci-dessous pour accéder à nos différents canaux de communication et services.
+🔄 Appuie sur /start pour actualiser le menu
 
-<b>ℹ️ Information importante :</b>
-Ce bot est conforme aux conditions d'utilisation de Telegram. Tous les contenus et services proposés respectent les lois en vigueur.
-
-Appuyez sur /start pour actualiser le menu🔄"""
+❓ Besoin d'aide ?
+Appuie sur le bouton Contact"""
     
     # Envoi de l'image si elle existe, sinon juste le message
     try:
@@ -129,16 +127,14 @@ Appuyez sur /start pour actualiser le menu🔄"""
     except Exception as e:
         logger.error(f"Erreur lors de l'envoi de l'image: {e}")
         # En cas d'erreur, envoyer sans formatage
-        welcome_message_plain = """Bienvenue chez Mexicain59🥇
+        welcome_message_plain = """Bienvenue chez Mexicain59
 
-Bienvenue sur notre plateforme ! Découvrez nos services et restez connecté avec notre communauté.
+Accède facilement à nos services et produits grâce aux boutons ci-dessous
 
-Utilisez les boutons ci-dessous pour accéder à nos différents canaux de communication et services.
+🔄 Appuie sur /start pour actualiser le menu
 
-ℹ️ Information importante :
-Ce bot est conforme aux conditions d'utilisation de Telegram. Tous les contenus et services proposés respectent les lois en vigueur.
-
-Appuyez sur /start pour actualiser le menu🔄"""
+❓ Besoin d'aide ?
+Appuie sur le bouton Contact"""
         await update.message.reply_text(
             welcome_message_plain,
             reply_markup=reply_markup
